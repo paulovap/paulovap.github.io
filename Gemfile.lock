@@ -36,6 +36,7 @@ GEM
       github-pages-health-check (= 1.16.1)
       jekyll (= 3.8.5)
       jekyll-avatar (= 0.7.0)
+
       jekyll-coffeescript (= 1.1.1)
       jekyll-commonmark-ghpages (= 0.1.6)
       jekyll-default-layout (= 0.1.4)
