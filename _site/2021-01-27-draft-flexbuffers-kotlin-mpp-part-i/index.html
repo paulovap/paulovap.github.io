@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- Beautiful Jekyll | MIT license | Copyright Dean Attali 2016 -->
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+
+  <title>Flexbuffers on Kotlin Multiplatform Part I</title>
+
+  <meta name="author" content="Paulo Pinheiro" />
+
+  
+  <meta name="description" content="A blazing fast schemaless data-interchange format for Kotlin Multiplatform">
+  
+
+  <link rel="alternate" type="application/rss+xml" title="Home - A virtual proof that I'm awesome" href="http://localhost:4000/feed.xml" />
+
+  
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SW8085X4V2"></script>
+    <script>
+          window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-SW8085X4V2');
+</script>
+
+
+  
+
+  
+
+
+  
+    
+      
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css" />
+
+
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    
+      <link rel="stylesheet" href="/css/bootstrap-social.css" />
+    
+      <link rel="stylesheet" href="/css/main.css" />
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+    
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+    
+  
+
+  
+
+  
+
+  
+
+    <!-- Facebook OpenGraph tags -->
+  
+
+  
+  <meta property="og:title" content="Flexbuffers on Kotlin Multiplatform Part I" />
+  
+
+   
+  <meta property="og:description" content="A blazing fast schemaless data-interchange format for Kotlin Multiplatform">
+  
+
+
+  <meta property="og:type" content="website" />
+
+  
+  <meta property="og:url" content="http://localhost:4000/2021-01-27-draft-flexbuffers-kotlin-mpp-part-i/" />
+  <link rel="canonical" href="http://localhost:4000/2021-01-27-draft-flexbuffers-kotlin-mpp-part-i/" />
+  
+
+  
+  <meta property="og:image" content="http://localhost:4000/img/pinelang_logo.png" />
+  
+
+
+  <!-- Twitter summary cards -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@" />
+  <meta name="twitter:creator" content="@" />
+
+  
+  <meta name="twitter:title" content="Flexbuffers on Kotlin Multiplatform Part I" />
+  
+
+  
+  <meta name="twitter:description" content="A blazing fast schemaless data-interchange format for Kotlin Multiplatform">
+  
+
+  
+  <meta name="twitter:image" content="http://localhost:4000/img/pinelang_logo.png" />
+  
+
+  
+
+  
+
+</head>
+
+
+  <body>
+
+    
+
+  
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button><a class="navbar-brand" href="http://localhost:4000/">Home</a></div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+          <li><a href="/aboutme">About Me</a></li></ul>
+    </div>
+
+	
+	<div class="avatar-container">
+	  <div class="avatar-img-border">
+	    <a href="http://localhost:4000/">
+	      <img class="avatar-img" src="/img/pinelang_logo.png" />
+		</a>
+	  </div>
+	</div>
+	
+
+  </div>
+</nav>
+
+
+    <!-- TODO this file has become a mess, refactor it -->
+
+
+
+
+  <div id="header-big-imgs" data-num-img=1
+    
+	  
+	  
+	    
+		  data-img-src-1="/img/tree_bg.jpg"
+		
+	  
+    
+  ></div>
+
+
+<header class="header-section has-img">
+
+<div class="big-img intro-header">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-heading">
+          <h1>Flexbuffers on Kotlin Multiplatform Part I</h1>
+		  
+		    
+			<h2 class="post-subheading">A blazing fast schemaless data-interchange format for Kotlin Multiplatform</h2>
+			
+		  
+		  
+		  
+		  <span class="post-meta">Posted on January 27, 2021</span>
+		  
+        </div>
+      </div>
+    </div>
+  </div>
+  <span class='img-desc'></span>
+</div>
+
+<div class="intro-header no-img">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-heading">
+          <h1>Flexbuffers on Kotlin Multiplatform Part I</h1>
+		  
+		    
+			<h2 class="post-subheading">A blazing fast schemaless data-interchange format for Kotlin Multiplatform</h2>
+			
+		  
+		  
+		  
+		  <span class="post-meta">Posted on January 27, 2021</span>
+		  
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</header>
+
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+
+      
+        
+        
+        
+
+        <div id="header-gh-btns">
+          
+            
+              
+                  <iframe src="https://ghbtns.com/github-btn.html?user=google&repo=flatbuffers&type=star&count=true" frameborder="0" scrolling="0" width="120px" height="20px"></iframe>
+                
+            
+              
+                  <iframe src="https://ghbtns.com/github-btn.html?user=google&repo=flatbuffers&type=fork&count=true" frameborder="0" scrolling="0" width="120px" height="20px"></iframe>
+                
+            
+          
+        </div>
+      
+
+      <article role="main" class="blog-post">
+        <p>The objective of the post is to collect some notes about the implementation details and usage of Flexbuffers
+using Kotlin Multiplatform, and reason about where FlexBuffers can be a good replacement for our good old schemaless champion JSON.</p>
+
+<p>Since I’ve written the <a href="https://github.com/google/flatbuffers/blob/master/java/com/google/flatbuffers/FlexBuffers.java">Java’s port</a> as well, it will be a good opportunity to compare and see where Kotlin can make our life easier when compared to Java.</p>
+
+<h2 id="what-is-flexbuffers">What is FlexBuffers?</h2>
+
+<p>The single sentence ad:</p>
+<blockquote>
+  <p>Flexbuffers is a <strong>binary</strong>, <strong>schemaless</strong>, <strong>no-parsing</strong>, <strong>zero-copy</strong><sup id="fnref:zeronote" role="doc-noteref"><a href="#fn:zeronote" class="footnote">1</a></sup>, serialization format, that gives you
+a <strong>compact message</strong> to be read in-memory at incredible performance and low memory footprint.</p>
+</blockquote>
+
+<p>That effectively means that Flexbuffers is a binary serialization format, where its representation in memory is the same as the representation on the wire. Therefore there is no need for parsing, you can access a particular field in a Map without the need to read all fields.</p>
+
+<p>Let’s quickly go through some of the main characteristics and compare them with JSON, since it’s the current most popular serialization used these days.</p>
+
+<h3 id="schemaless">Schemaless</h3>
+
+<p>Same as JSON, being a schemaless format means the messages are “self-described”. So at the cost of increased payload, we can figure out the structure of the data at runtime.</p>
+
+<p>The available types are very similar to JSON’s and could be mapped the following way:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>FlexBuffers</th>
+      <th>JSON</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Map</td>
+      <td>Object</td>
+    </tr>
+    <tr>
+      <td>Vector/TypedVector/Blob</td>
+      <td>Array</td>
+    </tr>
+    <tr>
+      <td>String</td>
+      <td>String</td>
+    </tr>
+    <tr>
+      <td>Int/UInt/Float</td>
+      <td>Number</td>
+    </tr>
+    <tr>
+      <td>Boolean</td>
+      <td>true/false</td>
+    </tr>
+    <tr>
+      <td>Null</td>
+      <td>Null</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>For the purpose to this post we say Map or Object interchangibly.</p>
+
+<p>There are more types in FlexBuffers, such as “Indirect Int” and “Indirect Float” that can be used as a performance trick to make vectors or maps more compact. But for now,
+this is what is important to know in regards to the types.</p>
+
+<p>Usually not exposed as public API, there is also the “type” Offset. Which is a “pointer” to be followed through. It is the basis of
+the non-primitive types and allows the data to be represented as a <a href="https://en.wikipedia.org/wiki/Directed_acyclic_graph">DAG</a> grating interesting characteristics that we will discourse in other sections.</p>
+
+<h3 id="compactness-offset-and-repetitions">Compactness, Offset and Repetitions</h3>
+
+<p>As a binary format it is expected the data to occupy a smaller space than text based equivalent representation, at least in general. Flexbuffers stores the scalar types (<code class="language-plaintext highlighter-rouge">Int</code>, <code class="language-plaintext highlighter-rouge">Uint</code>, <code class="language-plaintext highlighter-rouge">Float</code>, <code class="language-plaintext highlighter-rouge">Double</code>) in the smallest unsigned representation possible. That means
+a <code class="language-plaintext highlighter-rouge">255</code> <code class="language-plaintext highlighter-rouge">UByte</code> would fit in <code class="language-plaintext highlighter-rouge">8 bits</code>, and <code class="language-plaintext highlighter-rouge">65535</code> <code class="language-plaintext highlighter-rouge">UShort</code> would fit in <code class="language-plaintext highlighter-rouge">16 bits</code> an so on. The width of the scalar is defined by it’s parent node, for example: A vector type would define the width of the children scalar.</p>
+
+<p>Besides the reduction of the scalar values, it is possible to enable <strong>string reuse</strong>. This is a powerful feature that, once enabled, all unique String keys and values are written just once. All the subsequent repetitions are replaced by an “Offset” which basically work as a pointer on the buffer for that repeated key. For a objects with a lot of repeated keys and values
+this is a massive improvement on size.</p>
+
+<p>Another implication of the Offsets are the Maps and Vectors reuse. As said before, data hierarchy on FlexBuffers might be seen
+as a DAG. But what if you have repetead branches in your data? Lets say, you have several instances of an “object” that has exactly the same data. As seen on the image below:</p>
+
+<p><img src="/img/dag-before.png" alt="DAG" /></p>
+
+<p>The serialization format allows to replace all repeated occurences of those “branches” into an Offset, drastically reducing the space needed for the message. As you can see in the following ilustration.</p>
+
+<p><img src="/img/dag-compressed.png" alt="DAG-After" /></p>
+
+<h3 id="no-parsing">“No-Parsing”</h3>
+
+<p>Because you use the same representation of the data in wire, disk or memory, there is nothing to be parsed. To fetch a field means following a set a Offset until you find the data requested. For example, you want to access:</p>
+
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//lets say the data is[10,20,30,40]</span>
+<span class="kd">val</span> <span class="py">ref</span> <span class="p">=</span> <span class="nc">Flexbuffers</span><span class="p">.</span><span class="nf">getRoot</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> 
+<span class="kd">val</span> <span class="py">myInt</span> <span class="p">=</span> <span class="n">ref</span><span class="p">[</span><span class="mi">3</span><span class="p">].</span><span class="nf">toInt</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>In this example an offset is read for getting the “head” of the vector. Since this is most likely a <code class="language-plaintext highlighter-rouge">TypedVector</code> the
+offset for the third element is calculated based on the index (<code class="language-plaintext highlighter-rouge">3</code>) an then the number is read from memory. That would mean, most likely,
+three memory accesses.</p>
+
+<p><code class="language-plaintext highlighter-rouge">Vector</code> have an additional read to fecht the element type.</p>
+
+<p><code class="language-plaintext highlighter-rouge">Map</code> works as two vectors, one for the keys, which are sorted, and one for the values. Accessing a key / value pair inccurs a binary
+search on the key vector, then an access the the value. You can also opt to access the value by position, assuming you know the order
+in advance or have it cached.</p>
+
+<h3 id="zero-copy">“Zero-Copy”</h3>
+
+<p>That differs from <strong>JSON</strong> where the text-based representation on the wire is different from the in-memory representation, for example:</p>
+
+<p>A JSON message would have looked like this:</p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="nl">"myInt"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="nl">"myBoolean"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>is represented on memory with something like:</p>
+
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">val</span> <span class="py">json</span> <span class="p">=</span> <span class="s">"{\"myInt\": 10, \"myBoolean\": false}"</span>
+<span class="kd">val</span> <span class="py">map</span> <span class="p">=</span> <span class="nc">JSON</span><span class="p">.</span><span class="nf">parse</span><span class="p">(</span><span class="n">json</span><span class="p">)</span> <span class="c1">// Could be any json parser library</span>
+<span class="n">map</span>                        <span class="c1">// A Map(JsonObject or any equivalent) is allocated</span>
+<span class="n">map</span><span class="p">[</span><span class="s">"myInt"</span><span class="p">].</span><span class="nf">asInt</span><span class="p">()</span>       <span class="c1">// A Int object, possibly boxed</span>
+<span class="n">map</span><span class="p">[</span><span class="s">"myString"</span><span class="p">].</span><span class="nf">asString</span><span class="p">()</span> <span class="c1">// A String object, where "Hello world" was copyed/decoded</span>
+
+</code></pre></div></div>
+
+<p>Flexbuffers avoid the duplication by reading the data “at runtime” as the fields are requested. With one caveat: Strings.</p>
+
+<p>Strings are immutable objects on Kotlin and there is no api to wrap a <code class="language-plaintext highlighter-rouge">ByteArray</code> as a <code class="language-plaintext highlighter-rouge">String</code> without a copy. So accessing a string
+in Flexbuffers means decoding and copying the data into the String. Of course the string can be cached and decode only once, but still a copy.</p>
+
+<p>It would be possible to remedy this with a thin wrapper that implements a <code class="language-plaintext highlighter-rouge">CharSequence</code>, although this could be very efficient for ASCII strings, it would be very slow for UTF8 strings, since it is not possible to predict where each codepoint starts and ends without walking throught the whole data. So in a nutshell, if you data is dominated by unique strings and you perform full reads (e.g. read all fields), Flexbuffers would perform similar to any non-zero-copy protocol.</p>
+
+<h3 id="how-it-works">How it works?</h3>
+
+<p>In a nutshell</p>
+
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// we create a builder and tell it to create string pool</span>
+<span class="kd">val</span> <span class="py">builder</span> <span class="p">=</span> <span class="nc">FlexBuffersBuilder</span><span class="p">(</span><span class="n">shareFlag</span> <span class="p">=</span> <span class="nc">SHARE_KEYS_AND_STRINGS</span><span class="p">)</span>
+
+<span class="n">builder</span><span class="p">.</span><span class="nf">putVector</span> <span class="p">{</span>         <span class="c1">// adds a vector of variant types</span>
+  <span class="nf">put</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>                   <span class="c1">// adds as integer</span>
+  <span class="nf">putMap</span> <span class="p">{</span>                  <span class="c1">// adds a map / object</span>
+    <span class="k">this</span><span class="p">[</span><span class="s">"int"</span><span class="p">]</span> <span class="p">=</span> <span class="mi">10</span>
+    <span class="k">this</span><span class="p">[</span><span class="s">"hello"</span><span class="p">]</span> <span class="p">=</span> <span class="s">"world"</span> <span class="c1">// adds a key/value to map</span>
+    <span class="k">this</span><span class="p">[</span><span class="s">"float"</span><span class="p">]</span> <span class="p">=</span> <span class="mf">12.3</span>
+  <span class="p">}</span>
+  <span class="nf">put</span><span class="p">(</span><span class="s">"a string"</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="kd">val</span> <span class="py">buffer</span> <span class="p">=</span> <span class="n">builder</span><span class="p">.</span><span class="nf">finish</span><span class="p">()</span> <span class="c1">// we tell we finished writing, now we can read</span>
+<span class="kd">val</span> <span class="py">root</span> <span class="p">=</span> <span class="nf">getRoot</span><span class="p">()</span>
+
+<span class="nf">println</span><span class="p">(</span><span class="n">root</span><span class="p">.</span><span class="nf">toVector</span><span class="p">().</span><span class="n">size</span><span class="p">)</span>        <span class="c1">// 3</span>
+<span class="nf">println</span><span class="p">(</span><span class="n">root</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nf">toInt</span><span class="p">())</span>             <span class="c1">// 10</span>
+<span class="nf">println</span><span class="p">(</span><span class="n">root</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s">"hello"</span><span class="p">].</span><span class="nf">toString</span><span class="p">())</span> <span class="c1">// world</span>
+<span class="nf">println</span><span class="p">(</span><span class="n">root</span><span class="p">[</span><span class="mi">2</span><span class="p">].</span><span class="n">toString</span><span class="p">)</span>            <span class="c1">// a string </span>
+</code></pre></div></div>
+
+<p>The API is quite simple to use nad it tries to keep close to the original implementation in C++.</p>
+
+<p>TODO explain where it is worth using it</p>
+
+<h2 id="kotlin--multiplatform">Kotlin &amp; Multiplatform</h2>
+
+<p>TODO: explain pure conversion was slow and everything</p>
+
+<h2 id="cool-tricks">Cool tricks</h2>
+
+<p>TODO: show some cool tricks we used to implement it</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>TODO write the conclusion</p>
+
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:zeronote" role="doc-endnote">
+      <p>Zero additional allocation is only possible on non-managed languages. <a href="#fnref:zeronote" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+      </article>
+
+      
+        <div class="blog-tags">
+          Tags:
+          
+          
+            <a href="/tags#multiplatform">multiplatform</a>
+          
+            <a href="/tags#flexbuffers">flexbuffers</a>
+          
+            <a href="/tags#flatbuffers">flatbuffers</a>
+          
+            <a href="/tags#mpp">mpp</a>
+          
+            <a href="/tags#kotlin">kotlin</a>
+          
+          
+        </div>
+      
+
+      
+        <!-- Check if any share-links are active -->
+
+
+
+
+<section id = "social-share-section">
+  <span class="sr-only">Share: </span>
+
+  
+  <!--- Share on Twitter -->
+    <a href="https://twitter.com/intent/tweet?text=Flexbuffers+on+Kotlin+Multiplatform+Part+I&url=http%3A%2F%2Flocalhost%3A4000%2F2021-01-27-draft-flexbuffers-kotlin-mpp-part-i%2F"
+      class="btn btn-social-icon btn-twitter" title="Share on Twitter">
+      <span class="fa fa-fw fa-twitter" aria-hidden="true"></span>
+      <span class="sr-only">Twitter</span>
+    </a>
+  
+
+  
+
+  
+  <!--- Share on LinkedIn -->
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2F2021-01-27-draft-flexbuffers-kotlin-mpp-part-i%2F"
+      class="btn btn-social-icon btn-linkedin" title="Share on LinkedIn">
+      <span class="fa fa-fw fa-linkedin" aria-hidden="true"></span>
+      <span class="sr-only">LinkedIn</span>
+    </a>
+  
+
+</section>
+
+
+
+      
+
+      <ul class="pager blog-pager">
+        
+        <li class="previous">
+          <a href="/2020-04-16-hello-pinelang/" data-toggle="tooltip" data-placement="top" title="Pinelang, hello world!">&larr; Previous Post</a>
+        </li>
+        
+        
+      </ul>
+
+      
+        <div class="disqus-comments">
+          
+        </div>
+          
+        <div class="staticman-comments">
+          
+
+        </div>
+        <div class="justcomments-comments">
+          
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+
+    <footer>
+  <div class="container beautiful-jekyll-footer">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links"><li><a href="/feed.xml" title="RSS"><span class="fa-stack fa-lg" aria-hidden="true">
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="sr-only">RSS</span>
+              </a>
+            </li><li><a href="https://github.com/paulovap" title="GitHub"><span class="fa-stack fa-lg" aria-hidden="true">
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="sr-only">GitHub</span>
+              </a>
+            </li><li><a href="https://twitter.com/paulovap_os" title="Twitter"><span class="fa-stack fa-lg" aria-hidden="true">
+                  <i class="fa fa-circle fa-stack-2x"></i>
+                  <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                </span>
+                <span class="sr-only">Twitter</span>
+              </a>
+            </li></ul>
+      <p class="copyright text-muted">
+      Paulo Pinheiro
+      &nbsp;&bull;&nbsp;
+      2021
+
+      
+      &nbsp;&bull;&nbsp;
+      <a href="http://localhost:4000/">paulovap.github.io</a>
+      
+
+      
+      </p>
+          <!-- Please don't remove this, keep my open source work credited :) -->
+    <p class="theme-by text-muted">
+      Theme by
+      <a href="https://deanattali.com/beautiful-jekyll/">beautiful-jekyll</a>
+    </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  
+    
+
+
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+      <script>
+      	if (typeof jQuery == 'undefined') {
+          document.write('<script src="/js/jquery-1.11.2.min.js"></scr' + 'ipt>');
+      	}
+      </script>
+    
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+      <script src="/js/bootstrap.min.js"></script>
+    
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+      <script src="/js/main.js"></script>
+    
+  
+
+
+
+
+
+
+  
+  </body>
+</html>

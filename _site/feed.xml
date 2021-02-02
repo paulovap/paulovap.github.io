@@ -2,15 +2,26 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Home</title>
-    <description>A virtual proof that I'm awesome</description>
+    <description>A virtual proof that I&apos;m awesome</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
+    
+      <item>
+        <title>Flexbuffers on Kotlin Multiplatform Part I</title>
+        <description>
+          A blazing fast schemaless data-interchange format for Kotlin Multiplatform - 
+          The objective of the post is to collect some notes about the implementation details and usage of Flexbuffers using Kotlin Multiplatform, and reason about where FlexBuffers can be a good replacement for our good old schemaless champion JSON. Since I’ve written the Java’s port as well, it will be a...
+        </description>
+        <pubDate>Wed, 27 Jan 2021 00:00:00 +0100</pubDate>
+        <link>http://localhost:4000/2021-01-27-draft-flexbuffers-kotlin-mpp-part-i/</link>
+        <guid isPermaLink="true">http://localhost:4000/2021-01-27-draft-flexbuffers-kotlin-mpp-part-i/</guid>
+      </item>
     
       <item>
         <title>Pinelang, hello world!</title>
         <description>
           A script language on top of Kotlin - 
-          So I decided to resurrect an old project of mine to create a small footprint scripting language on top of Kotlin. But why would one do that? HttpServer { hostname: 'localhost' port: 8080 on connection: (resp) { println(&quot;Hello world:&quot; + resp.text) } } What is Pinelang? PineLang is a minimalistic,...
+          So I decided to resurrect an old project of mine to create a small footprint scripting language on top of Kotlin. But why would one do that? HttpServer { hostname: &apos;localhost&apos; port: 8080 on connection: (resp) { println(&quot;Hello world:&quot; + resp.text) } } What is Pinelang? PineLang is a minimalistic,...
         </description>
         <pubDate>Thu, 16 Apr 2020 00:00:00 +0200</pubDate>
         <link>http://localhost:4000/2020-04-16-hello-pinelang/</link>
