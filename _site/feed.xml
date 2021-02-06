@@ -7,14 +7,14 @@
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
-        <title>Flexbuffers on Kotlin Multiplatform Part I</title>
+        <title>Flexbuffers on Kotlin MPP Part I</title>
         <description>
           A blazing fast schemaless format for Kotlin Multiplatform - 
-          The objective of the post is to collect some notes about the implementation details and usage of Flexbuffers using Kotlin Multiplatform, and reason about where FlexBuffers can be a good replacement for our good old schemaless champion JSON. Since I’ve written the Java port as well, so it is a...
+          The objective of this series of posts is to collect some notes about the implementation details and usage of Flexbuffers using Kotlin Multiplatform, and reason about where FlexBuffers can be a good replacement for our good old schemaless champion JSON. Since I’ve written the Java port as well, so it...
         </description>
-        <pubDate>Wed, 27 Jan 2021 00:00:00 +0100</pubDate>
-        <link>http://localhost:4000/2021-01-27-flexbuffers-kotlin-mpp-part-i/</link>
-        <guid isPermaLink="true">http://localhost:4000/2021-01-27-flexbuffers-kotlin-mpp-part-i/</guid>
+        <pubDate>Sat, 06 Feb 2021 00:00:00 +0100</pubDate>
+        <link>http://localhost:4000/2021-02-06-flexbuffers-kotlin-mpp-part-i/</link>
+        <guid isPermaLink="true">http://localhost:4000/2021-02-06-flexbuffers-kotlin-mpp-part-i/</guid>
       </item>
     
       <item>

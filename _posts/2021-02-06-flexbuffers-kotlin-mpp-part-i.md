@@ -59,7 +59,7 @@ There are more types in FlexBuffers, such as "Indirect Int" and "Indirect Float"
 this is what is important to know in regards to the types. 
 
 Usually not exposed as public API, there is also the "type" Offset. Which is a "pointer" to be followed through. It is the basis of
-the non-primitive types and allows the data to be represented as a [DAG](https://en.wikipedia.org/wiki/Directed_acyclic_graph) grating interesting characteristics that we will discourse in other sections.
+the non-primitive types and allows the data to be represented as a [DAG](https://en.wikipedia.org/wiki/Directed_acyclic_graph) granting interesting characteristics that we will discourse in other sections.
 
 
 ### Compactness, Offset and Repetitions
@@ -78,6 +78,15 @@ as a DAG. But what if you have repeated branches in your data? Let's say, you ha
 The serialization format allows replacing all repeated occurrences of those "branches" into an Offset, drastically reducing the space needed for the message. As you can see in the following illustration.
 
 ![DAG-After](/img/dag-compressed.png)
+
+With all that said, you can see that in many cases the data in Flexbuffers ends up smaller than the JSON equivalent.
+
+As an example, we can check the commonly used data benchmark [twitter.json](https://github.com/serde-rs/json-benchmark/blob/master/data/twitter.json).It has approximately **617 KB**  in JSON and when converted to Flexbuffers becomes **255KB**.
+
+You can test yourself with different data by running the command:
+```bash
+flatc --binary --json --flexbuffers twitter.json
+```
 
 ### "No-Parsing"
 
@@ -128,11 +137,13 @@ It would be possible to remedy this with a thin wrapper that implements a `CharS
 
 ### How it works?
 
-In a nutshell, the user needs to be aware of only three classes: `ArrayReadWriteBuffer`, `FlexBuffersBuilder`, `Reference`.
+In a nutshell, the user needs to be aware of only three classes: [ArrayReadWriteBuffer](https://github.com/google/flatbuffers/blob/master/kotlin/flatbuffers-kotlin/src/commonMain/kotlin/com/google/flatbuffers/kotlin/Buffers.kt#L371),
+[FlexBuffersBuilder](https://github.com/google/flatbuffers/blob/master/kotlin/flatbuffers-kotlin/src/commonMain/kotlin/com/google/flatbuffers/kotlin/FlexBuffersBuilder.kt#L20),
+[Reference](https://github.com/google/flatbuffers/blob/master/kotlin/flatbuffers-kotlin/src/commonMain/kotlin/com/google/flatbuffers/kotlin/FlexBuffers.kt#L41).
 
-`ArrayReadWriteBuffer` is just a `ReadWriteBuffer` backed by an internal `ByteArray` (okay, I lied and ended up introducing more concepts). `ReadBuffer` is
+`ArrayReadWriteBuffer` is just a [ReadWriteBuffer](https://github.com/google/flatbuffers/blob/master/kotlin/flatbuffers-kotlin/src/commonMain/kotlin/com/google/flatbuffers/kotlin/Buffers.kt#L148)backed by an internal `ByteArray` (okay, I lied and ended up introducing more concepts). [ReadBuffer](https://github.com/google/flatbuffers/blob/master/kotlin/flatbuffers-kotlin/src/commonMain/kotlin/com/google/flatbuffers/kotlin/Buffers.kt#L24) is
 an interface that supports random access to a buffer and `ReadWriteBuffer` writes primitives, like `Int`, `String` etc on the buffer on little-endian. While instantiating
-a new `FlexBuffBuilder` you can pass an `ArrayReadWriteBuffer` to be used, or it will simply create one automatically for you.
+a new `FlexBuffersBuilder` you can pass an `ArrayReadWriteBuffer` to be used, or it will simply create one automatically for you.
 
 `FlexBuffersBuilder` it is responsible for creating the data structure within the buffer and optionally do the string pooling for keys and values. Currently, they are in
 separate pools, because the format for keys is different from the values. Keys are c-like `0` terminated strings and values store the length in bytes. Hopefully, in the future, a new `KEY` type can be introduced to unify the pools and save more space in the message. I could think of genuine cases where a key could also be present in value (query parameters for example).
@@ -154,7 +165,7 @@ builder.putVector {         // adds a vector of variant types
   put("a string")
 }
 val buffer = builder.finish() // we tell we finished writing, now we can read
-val root = getRoot()
+val root = getRoot(buffer)
 
 println(root.toVector().size)        // 3
 println(root[0].toInt())             // 10

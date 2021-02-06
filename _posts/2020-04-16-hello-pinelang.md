@@ -7,6 +7,7 @@ gh-badge: [star, fork, follow]
 bigimg: /img/tree_bg.jpg
 tags: [pinelang, script, kotlin]
 comments: true
+draft: true
 ---
 
 So I decided to resurrect an old project of mine to create a small footprint scripting language on top of Kotlin. But why would one do that?
