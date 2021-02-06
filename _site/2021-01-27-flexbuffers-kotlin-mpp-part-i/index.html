@@ -11,7 +11,7 @@
   <meta name="author" content="Paulo Pinheiro" />
 
   
-  <meta name="description" content="A blazing fast schemaless data-interchange format for Kotlin Multiplatform">
+  <meta name="description" content="A blazing fast schemaless format for Kotlin Multiplatform">
   
 
   <link rel="alternate" type="application/rss+xml" title="Home - A virtual proof that I'm awesome" href="http://localhost:4000/feed.xml" />
@@ -74,15 +74,15 @@
   
 
    
-  <meta property="og:description" content="A blazing fast schemaless data-interchange format for Kotlin Multiplatform">
+  <meta property="og:description" content="A blazing fast schemaless format for Kotlin Multiplatform">
   
 
 
   <meta property="og:type" content="website" />
 
   
-  <meta property="og:url" content="http://localhost:4000/2021-01-27-draft-flexbuffers-kotlin-mpp-part-i/" />
-  <link rel="canonical" href="http://localhost:4000/2021-01-27-draft-flexbuffers-kotlin-mpp-part-i/" />
+  <meta property="og:url" content="http://localhost:4000/2021-01-27-flexbuffers-kotlin-mpp-part-i/" />
+  <link rel="canonical" href="http://localhost:4000/2021-01-27-flexbuffers-kotlin-mpp-part-i/" />
   
 
   
@@ -100,7 +100,7 @@
   
 
   
-  <meta name="twitter:description" content="A blazing fast schemaless data-interchange format for Kotlin Multiplatform">
+  <meta name="twitter:description" content="A blazing fast schemaless format for Kotlin Multiplatform">
   
 
   
@@ -175,7 +175,7 @@
           <h1>Flexbuffers on Kotlin Multiplatform Part I</h1>
 		  
 		    
-			<h2 class="post-subheading">A blazing fast schemaless data-interchange format for Kotlin Multiplatform</h2>
+			<h2 class="post-subheading">A blazing fast schemaless format for Kotlin Multiplatform</h2>
 			
 		  
 		  
@@ -197,7 +197,7 @@
           <h1>Flexbuffers on Kotlin Multiplatform Part I</h1>
 		  
 		    
-			<h2 class="post-subheading">A blazing fast schemaless data-interchange format for Kotlin Multiplatform</h2>
+			<h2 class="post-subheading">A blazing fast schemaless format for Kotlin Multiplatform</h2>
 			
 		  
 		  
@@ -243,7 +243,19 @@
         <p>The objective of the post is to collect some notes about the implementation details and usage of Flexbuffers
 using Kotlin Multiplatform, and reason about where FlexBuffers can be a good replacement for our good old schemaless champion JSON.</p>
 
-<p>Since I’ve written the <a href="https://github.com/google/flatbuffers/blob/master/java/com/google/flatbuffers/FlexBuffers.java">Java’s port</a> as well, it will be a good opportunity to compare and see where Kotlin can make our life easier when compared to Java.</p>
+<p>Since I’ve written the <a href="https://github.com/google/flatbuffers/blob/master/java/com/google/flatbuffers/FlexBuffers.java">Java port</a> as well, so it is a good opportunity to compare and see where Kotlin can make our life easier when compared to Java.</p>
+
+<p>This is part one of a series of posts with a few more planned, and the library itself is not yet distributed over maven, but you can check out not on <a href="https://github.com/google/flatbuffers/tree/master/kotlin">google/flatbuffers</a>. The API is still being ironed out and I hope those posts
+help giving feedback and make the library better.</p>
+
+<p><a name="whatis"></a></p>
+
+<ul>
+  <li><a href="#whatis">Part I   - What is Flexbuffers?</a></li>
+  <li>Part II  - Flexbuffers: Kotlin MPP implementation details.</li>
+  <li>Part III - Flexbuffers Benchmarks: Kotlin vs Java.</li>
+  <li>Part IV  - Flexbuffers: Json support &amp; Benchmarks</li>
+</ul>
 
 <h2 id="what-is-flexbuffers">What is FlexBuffers?</h2>
 
@@ -298,7 +310,7 @@ a <strong>compact message</strong> to be read in-memory at incredible performanc
   </tbody>
 </table>
 
-<p>For the purpose to this post we say Map or Object interchangibly.</p>
+<p>For the purpose of this post, we say Map or Object interchangeably.</p>
 
 <p>There are more types in FlexBuffers, such as “Indirect Int” and “Indirect Float” that can be used as a performance trick to make vectors or maps more compact. But for now,
 this is what is important to know in regards to the types.</p>
@@ -308,38 +320,38 @@ the non-primitive types and allows the data to be represented as a <a href="http
 
 <h3 id="compactness-offset-and-repetitions">Compactness, Offset and Repetitions</h3>
 
-<p>As a binary format it is expected the data to occupy a smaller space than text based equivalent representation, at least in general. Flexbuffers stores the scalar types (<code class="language-plaintext highlighter-rouge">Int</code>, <code class="language-plaintext highlighter-rouge">Uint</code>, <code class="language-plaintext highlighter-rouge">Float</code>, <code class="language-plaintext highlighter-rouge">Double</code>) in the smallest unsigned representation possible. That means
-a <code class="language-plaintext highlighter-rouge">255</code> <code class="language-plaintext highlighter-rouge">UByte</code> would fit in <code class="language-plaintext highlighter-rouge">8 bits</code>, and <code class="language-plaintext highlighter-rouge">65535</code> <code class="language-plaintext highlighter-rouge">UShort</code> would fit in <code class="language-plaintext highlighter-rouge">16 bits</code> an so on. The width of the scalar is defined by it’s parent node, for example: A vector type would define the width of the children scalar.</p>
+<p>As a binary format, it is expected the data to occupy a smaller space than text based equivalent representation, at least in general. Flexbuffers stores the scalar types (<code class="language-plaintext highlighter-rouge">Int</code>, <code class="language-plaintext highlighter-rouge">Uint</code>, <code class="language-plaintext highlighter-rouge">Float</code>, <code class="language-plaintext highlighter-rouge">Double</code>) in the smallest unsigned representation possible. That means
+a <code class="language-plaintext highlighter-rouge">255</code> <code class="language-plaintext highlighter-rouge">UByte</code> would fit in <code class="language-plaintext highlighter-rouge">8 bits</code>, and <code class="language-plaintext highlighter-rouge">65535</code> <code class="language-plaintext highlighter-rouge">UShort</code> would fit in <code class="language-plaintext highlighter-rouge">16 bits</code> and so on. The width of the scalar is defined by its parent node, for example, A vector type would define the width of the children’s scalar.</p>
 
-<p>Besides the reduction of the scalar values, it is possible to enable <strong>string reuse</strong>. This is a powerful feature that, once enabled, all unique String keys and values are written just once. All the subsequent repetitions are replaced by an “Offset” which basically work as a pointer on the buffer for that repeated key. For a objects with a lot of repeated keys and values
-this is a massive improvement on size.</p>
+<p>Besides the reduction of the scalar values, it is possible to enable <strong>string reuse</strong>. This is a powerful feature that, once enabled, all unique String keys and values are written just once. All the subsequent repetitions are replaced by an “Offset” which basically works as a pointer on the buffer for that repeated key. For objects with a lot of repeated keys and values
+this is a massive improvement in size.</p>
 
-<p>Another implication of the Offsets are the Maps and Vectors reuse. As said before, data hierarchy on FlexBuffers might be seen
-as a DAG. But what if you have repetead branches in your data? Lets say, you have several instances of an “object” that has exactly the same data. As seen on the image below:</p>
+<p>Another implication of the Offsets is the Maps and Vectors reuse. As said before, the data hierarchy on FlexBuffers might be seen
+as a DAG. But what if you have repeated branches in your data? Let’s say, you have several instances of an “object” that has exactly the same data. As seen on the image below:</p>
 
 <p><img src="/img/dag-before.png" alt="DAG" /></p>
 
-<p>The serialization format allows to replace all repeated occurences of those “branches” into an Offset, drastically reducing the space needed for the message. As you can see in the following ilustration.</p>
+<p>The serialization format allows replacing all repeated occurrences of those “branches” into an Offset, drastically reducing the space needed for the message. As you can see in the following illustration.</p>
 
 <p><img src="/img/dag-compressed.png" alt="DAG-After" /></p>
 
 <h3 id="no-parsing">“No-Parsing”</h3>
 
-<p>Because you use the same representation of the data in wire, disk or memory, there is nothing to be parsed. To fetch a field means following a set a Offset until you find the data requested. For example, you want to access:</p>
+<p>Because you use the same representation of the data in wire, disk, or memory, there is nothing to be parsed. To fetch a field means following a set of Offset until you find the data requested. For example, you want to access:</p>
 
 <div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//lets say the data is[10,20,30,40]</span>
 <span class="kd">val</span> <span class="py">ref</span> <span class="p">=</span> <span class="nc">Flexbuffers</span><span class="p">.</span><span class="nf">getRoot</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> 
 <span class="kd">val</span> <span class="py">myInt</span> <span class="p">=</span> <span class="n">ref</span><span class="p">[</span><span class="mi">3</span><span class="p">].</span><span class="nf">toInt</span><span class="p">()</span>
 </code></pre></div></div>
 
-<p>In this example an offset is read for getting the “head” of the vector. Since this is most likely a <code class="language-plaintext highlighter-rouge">TypedVector</code> the
-offset for the third element is calculated based on the index (<code class="language-plaintext highlighter-rouge">3</code>) an then the number is read from memory. That would mean, most likely,
+<p>In this example, an offset is read for getting the “head” of the vector. Since this is most likely a <code class="language-plaintext highlighter-rouge">TypedVector</code> the
+offset for the third element is calculated based on the index (<code class="language-plaintext highlighter-rouge">3</code>) and then the number is read from memory. That would mean, most likely,
 three memory accesses.</p>
 
-<p><code class="language-plaintext highlighter-rouge">Vector</code> have an additional read to fecht the element type.</p>
+<p><code class="language-plaintext highlighter-rouge">Vector</code> has an additional read to fetch the element type.</p>
 
-<p><code class="language-plaintext highlighter-rouge">Map</code> works as two vectors, one for the keys, which are sorted, and one for the values. Accessing a key / value pair inccurs a binary
-search on the key vector, then an access the the value. You can also opt to access the value by position, assuming you know the order
+<p><code class="language-plaintext highlighter-rouge">Map</code> works as two vectors, one for the keys, which are sorted, and one for the values. Accessing a key/value pair incurs a binary
+search on the key vector, then access the value. You can also opt to access the value by position, assuming you know the order
 in advance or have it cached.</p>
 
 <h3 id="zero-copy">“Zero-Copy”</h3>
@@ -360,16 +372,26 @@ in advance or have it cached.</p>
 
 </code></pre></div></div>
 
-<p>Flexbuffers avoid the duplication by reading the data “at runtime” as the fields are requested. With one caveat: Strings.</p>
+<p>Flexbuffers avoid duplication by reading the data “at runtime” as the fields are requested. With one caveat: Strings.</p>
 
-<p>Strings are immutable objects on Kotlin and there is no api to wrap a <code class="language-plaintext highlighter-rouge">ByteArray</code> as a <code class="language-plaintext highlighter-rouge">String</code> without a copy. So accessing a string
-in Flexbuffers means decoding and copying the data into the String. Of course the string can be cached and decode only once, but still a copy.</p>
+<p>Strings are immutable objects on Kotlin and there is no API to wrap a <code class="language-plaintext highlighter-rouge">ByteArray</code> as a <code class="language-plaintext highlighter-rouge">String</code> without a copy. So accessing a string
+in Flexbuffers means decoding and copying the data into the String. Of course, the string can be cached and decode only once, but still a copy.</p>
 
-<p>It would be possible to remedy this with a thin wrapper that implements a <code class="language-plaintext highlighter-rouge">CharSequence</code>, although this could be very efficient for ASCII strings, it would be very slow for UTF8 strings, since it is not possible to predict where each codepoint starts and ends without walking throught the whole data. So in a nutshell, if you data is dominated by unique strings and you perform full reads (e.g. read all fields), Flexbuffers would perform similar to any non-zero-copy protocol.</p>
+<p>It would be possible to remedy this with a thin wrapper that implements a <code class="language-plaintext highlighter-rouge">CharSequence</code>, although this could be very efficient for ASCII strings, it would be very slow for UTF8 strings since it is not possible to predict where each codepoint starts and ends without walking throughout the whole data. So in a nutshell, if your data is dominated by unique strings and you perform full reads (e.g. read all fields), Flexbuffers would perform similar to any non-zero-copy protocol.</p>
 
 <h3 id="how-it-works">How it works?</h3>
 
-<p>In a nutshell</p>
+<p>In a nutshell, the user needs to be aware of only three classes: <code class="language-plaintext highlighter-rouge">ArrayReadWriteBuffer</code>, <code class="language-plaintext highlighter-rouge">FlexBuffersBuilder</code>, <code class="language-plaintext highlighter-rouge">Reference</code>.</p>
+
+<p><code class="language-plaintext highlighter-rouge">ArrayReadWriteBuffer</code> is just a <code class="language-plaintext highlighter-rouge">ReadWriteBuffer</code> backed by an internal <code class="language-plaintext highlighter-rouge">ByteArray</code> (okay, I lied and ended up introducing more concepts). <code class="language-plaintext highlighter-rouge">ReadBuffer</code> is
+an interface that supports random access to a buffer and <code class="language-plaintext highlighter-rouge">ReadWriteBuffer</code> writes primitives, like <code class="language-plaintext highlighter-rouge">Int</code>, <code class="language-plaintext highlighter-rouge">String</code> etc on the buffer on little-endian. While instantiating
+a new <code class="language-plaintext highlighter-rouge">FlexBuffBuilder</code> you can pass an <code class="language-plaintext highlighter-rouge">ArrayReadWriteBuffer</code> to be used, or it will simply create one automatically for you.</p>
+
+<p><code class="language-plaintext highlighter-rouge">FlexBuffersBuilder</code> it is responsible for creating the data structure within the buffer and optionally do the string pooling for keys and values. Currently, they are in
+separate pools, because the format for keys is different from the values. Keys are c-like <code class="language-plaintext highlighter-rouge">0</code> terminated strings and values store the length in bytes. Hopefully, in the future, a new <code class="language-plaintext highlighter-rouge">KEY</code> type can be introduced to unify the pools and save more space in the message. I could think of genuine cases where a key could also be present in value (query parameters for example).</p>
+
+<p>Once the buffer is done, it can be read with <code class="language-plaintext highlighter-rouge">Reference</code>. There is a static function called <code class="language-plaintext highlighter-rouge">getRoot(data: ReadBuffer): Reference</code> that will return the reference to the root
+of the data graph. From that, you can access any element of the data, as you can see in the example below.</p>
 
 <div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// we create a builder and tell it to create string pool</span>
 <span class="kd">val</span> <span class="py">builder</span> <span class="p">=</span> <span class="nc">FlexBuffersBuilder</span><span class="p">(</span><span class="n">shareFlag</span> <span class="p">=</span> <span class="nc">SHARE_KEYS_AND_STRINGS</span><span class="p">)</span>
@@ -392,22 +414,17 @@ in Flexbuffers means decoding and copying the data into the String. Of course th
 <span class="nf">println</span><span class="p">(</span><span class="n">root</span><span class="p">[</span><span class="mi">2</span><span class="p">].</span><span class="n">toString</span><span class="p">)</span>            <span class="c1">// a string </span>
 </code></pre></div></div>
 
-<p>The API is quite simple to use nad it tries to keep close to the original implementation in C++.</p>
-
-<p>TODO explain where it is worth using it</p>
-
-<h2 id="kotlin--multiplatform">Kotlin &amp; Multiplatform</h2>
-
-<p>TODO: explain pure conversion was slow and everything</p>
-
-<h2 id="cool-tricks">Cool tricks</h2>
-
-<p>TODO: show some cool tricks we used to implement it</p>
-
 <h2 id="conclusion">Conclusion</h2>
 
-<p>TODO write the conclusion</p>
+<p>Flexbuffers is a very interesting format with an uncommon interesting characteristic: It introduces “Pointers” and let
+the user access data indirectly through it. This creates a series of opportunities at the cost of potential additional memory access for
+reading fields.</p>
 
+<p>This first part of a series of the post was meant to do a gentle introduction to Flexbuffers to make it easy to understand
+the internal details and reason about the decisions on the Kotlin Multiplatform implementation. In the next parts, we will dive a little
+bit more into the differences between Kotlin &amp; Java implementation, and the advantages (and disadvantages) of Kotlin in comparison with Java.</p>
+
+<p>Hopefully, some benchmarks will be present :P</p>
 <div class="footnotes" role="doc-endnotes">
   <ol>
     <li id="fn:zeronote" role="doc-endnote">
@@ -448,7 +465,7 @@ in Flexbuffers means decoding and copying the data into the String. Of course th
 
   
   <!--- Share on Twitter -->
-    <a href="https://twitter.com/intent/tweet?text=Flexbuffers+on+Kotlin+Multiplatform+Part+I&url=http%3A%2F%2Flocalhost%3A4000%2F2021-01-27-draft-flexbuffers-kotlin-mpp-part-i%2F"
+    <a href="https://twitter.com/intent/tweet?text=Flexbuffers+on+Kotlin+Multiplatform+Part+I&url=http%3A%2F%2Flocalhost%3A4000%2F2021-01-27-flexbuffers-kotlin-mpp-part-i%2F"
       class="btn btn-social-icon btn-twitter" title="Share on Twitter">
       <span class="fa fa-fw fa-twitter" aria-hidden="true"></span>
       <span class="sr-only">Twitter</span>
@@ -459,7 +476,7 @@ in Flexbuffers means decoding and copying the data into the String. Of course th
 
   
   <!--- Share on LinkedIn -->
-    <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2F2021-01-27-draft-flexbuffers-kotlin-mpp-part-i%2F"
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=http%3A%2F%2Flocalhost%3A4000%2F2021-01-27-flexbuffers-kotlin-mpp-part-i%2F"
       class="btn btn-social-icon btn-linkedin" title="Share on LinkedIn">
       <span class="fa fa-fw fa-linkedin" aria-hidden="true"></span>
       <span class="sr-only">LinkedIn</span>
