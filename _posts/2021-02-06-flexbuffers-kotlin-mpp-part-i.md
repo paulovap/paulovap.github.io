@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Flexbuffers on Kotlin Multiplatform Part I"
+title: "Flexbuffers on Kotlin MPP Part I"
 subtitle: A blazing fast schemaless format for Kotlin Multiplatform
 gh-repo: google/flatbuffers
 gh-badge: [star, fork]
@@ -10,13 +10,13 @@ comments: true
 draft: false
 ---
 
-The objective of the post is to collect some notes about the implementation details and usage of Flexbuffers
+The objective of this series of posts is to collect some notes about the implementation details and usage of Flexbuffers
 using Kotlin Multiplatform, and reason about where FlexBuffers can be a good replacement for our good old schemaless champion JSON.
 
 Since I've written the [Java port](https://github.com/google/flatbuffers/blob/master/java/com/google/flatbuffers/FlexBuffers.java) as well, so it is a good opportunity to compare and see where Kotlin can make our life easier when compared to Java.
 
-This is part one of a series of posts with a few more planned, and the library itself is not yet distributed over maven, but you can check out not on [google/flatbuffers](https://github.com/google/flatbuffers/tree/master/kotlin). The API is still being ironed out and I hope those posts
-help giving feedback and make the library better.
+This is part one of a series of posts with a few more planned, and the library itself is not yet distributed over maven, but you can check out on [google/flatbuffers](https://github.com/google/flatbuffers/tree/master/kotlin). The API is still being ironed out and I hope those posts
+help attract feedback and suggestions to make the library better.
 
 <a name="whatis"></a>
 
